@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "customer")
@@ -18,15 +20,18 @@ public class Employee {
 	@Column(name = "id")
 	private int id;
 
+	@Size(min = 2, message = "At least 2 character reqiored")
 	@Column(name = "first_name")
 	private String firstName;
 
+	@Size(min = 2, message = "At least 2 character reqiored")
 	@Column(name = "last_name")
 	private String lastName;
 
 	@Column(name = "email")
 	private String email;
 
+	@Past
 	@Column(name = "DOB")
 	private Date dateOfBirth;
 
