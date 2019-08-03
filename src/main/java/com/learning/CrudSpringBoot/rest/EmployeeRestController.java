@@ -1,10 +1,12 @@
 package com.learning.CrudSpringBoot.rest;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.learning.CrudSpringBoot.entity.Employee;
 import com.learning.CrudSpringBoot.exception.EmployeeNotfoundException;
@@ -39,25 +42,32 @@ public class EmployeeRestController {
 	}
 
 	@GetMapping("/employees/{employeeId}")
+//	@Scheduled(fixedDelay = 1000, initialDelay = 3000)
 	public Employee findById(@PathVariable int employeeId) {
 
 		Employee thEmployee = employeeService.findById(employeeId);
 
 		if (thEmployee == null) {
-			throw new RuntimeException("Employee id not found");
+			throw new EmployeeNotfoundException("Employee id not found");
 		}
 
 		return thEmployee;
 	}
 
 	@PostMapping("/employees")
-	public Employee addEmployee(@RequestBody Employee thEmployee) {
+	public ResponseEntity<Employee> addEmployee(@RequestBody Employee thEmployee) {
 
 		thEmployee.setId(0);
 
-		employeeService.save(thEmployee);
+		Employee employee = employeeService.save(thEmployee);
 
-		return thEmployee;
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+				.path("/{id}")
+				.buildAndExpand(employee.getId())
+				.toUri();
+
+		return ResponseEntity.created(location)
+				.build();
 	}
 
 	@PutMapping("/employees")
@@ -69,7 +79,7 @@ public class EmployeeRestController {
 		}
 
 		if (!employeeMap.containsKey(theEmployee.getId()))
-			throw new EmployeeNotfoundException();
+			throw new EmployeeNotfoundException("Employee not found");
 
 		employeeService.save(theEmployee);
 

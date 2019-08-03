@@ -1,5 +1,7 @@
 package com.learning.CrudSpringBoot.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,14 +27,18 @@ public class Employee {
 	@Column(name = "email")
 	private String email;
 
+	@Column(name = "DOB")
+	private Date dateOfBirth;
+
 	public Employee() {
 
 	}
 
-	public Employee(String firstName, String lastName, String email) {
+	public Employee(String firstName, String lastName, String email, Date dateOfBirth) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
+		this.dateOfBirth = dateOfBirth;
 	}
 
 	public int getId() {
@@ -67,9 +73,18 @@ public class Employee {
 		this.email = email;
 	}
 
+	public Date getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
 	@Override
 	public String toString() {
-		return "Employee [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + "]";
+		return "Employee [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
+				+ ", DateOfBirth=" + dateOfBirth + "]";
 	}
 
 }
