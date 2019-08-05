@@ -1,5 +1,8 @@
 package com.learning.CrudSpringBoot.rest;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +11,8 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,7 +50,7 @@ public class EmployeeRestController {
 
 	@GetMapping("/employees/{employeeId}")
 //	@Scheduled(fixedDelay = 1000, initialDelay = 3000)
-	public Employee findById(@PathVariable int employeeId) {
+	public Resource<Employee> findById(@PathVariable int employeeId) {
 
 		Employee thEmployee = employeeService.findById(employeeId);
 
@@ -53,7 +58,14 @@ public class EmployeeRestController {
 			throw new EmployeeNotfoundException("Employee id not found");
 		}
 
-		return thEmployee;
+//		all users, HATEOS, Send link back to User
+		Resource<Employee> resource = new Resource<Employee>(thEmployee);
+
+		ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).findAll());
+
+		resource.add(linkTo.withRel("all-employees"));
+
+		return resource;
 	}
 
 	@PostMapping("/employees")
