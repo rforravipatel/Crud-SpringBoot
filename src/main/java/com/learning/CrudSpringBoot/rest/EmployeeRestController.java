@@ -11,6 +11,8 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +38,9 @@ public class EmployeeRestController {
 	private EmployeeService employeeService;
 
 	private static Map<Integer, Employee> employeeMap = new HashMap<>();
+
+	@Autowired
+	private MessageSource messageSource;
 
 	@Autowired
 	public EmployeeRestController(EmployeeService theEmployeeService) {
@@ -112,5 +117,11 @@ public class EmployeeRestController {
 		employeeService.deleteById(employeeId);
 
 		return "Deleted employee id - " + employeeId;
+	}
+
+//	Demo I18N
+	@GetMapping("/hello-I18N")
+	public String helloI18N() {
+		return messageSource.getMessage("good.morning.message", null, LocaleContextHolder.getLocale());
 	}
 }
