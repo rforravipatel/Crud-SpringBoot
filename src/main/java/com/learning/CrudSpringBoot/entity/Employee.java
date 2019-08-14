@@ -17,6 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(description = "Employee information")
 @Entity
 @Table(name = "customer")
+//@JsonIgnoreProperties(value = { "email" }) -------To ignore properties in response----------
 public class Employee {
 
 	@Id
@@ -34,6 +35,7 @@ public class Employee {
 	@Column(name = "last_name")
 	private String lastName;
 
+//	@JsonIgnore      -----To ignore property in response----------
 	@Column(name = "email")
 	private String email;
 
