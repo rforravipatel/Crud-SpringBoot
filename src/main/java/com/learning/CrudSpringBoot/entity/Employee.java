@@ -11,6 +11,10 @@ import javax.persistence.Table;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+@ApiModel(description = "Employee information")
 @Entity
 @Table(name = "customer")
 public class Employee {
@@ -20,17 +24,20 @@ public class Employee {
 	@Column(name = "id")
 	private int id;
 
-	@Size(min = 2, message = "At least 2 character reqiored")
+	@ApiModelProperty(notes = "At least 2 character required.")
+	@Size(min = 2, message = "At least 2 character required")
 	@Column(name = "first_name")
 	private String firstName;
 
-	@Size(min = 2, message = "At least 2 character reqiored")
+	@ApiModelProperty(notes = "At least 2 character required.")
+	@Size(min = 2, message = "At least 2 character required")
 	@Column(name = "last_name")
 	private String lastName;
 
 	@Column(name = "email")
 	private String email;
 
+	@ApiModelProperty(notes = "Birth date should be in the past.")
 	@Past
 	@Column(name = "DOB")
 	private Date dateOfBirth;
