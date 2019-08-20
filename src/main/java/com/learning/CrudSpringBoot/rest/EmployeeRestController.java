@@ -1,8 +1,5 @@
 package com.learning.CrudSpringBoot.rest;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -13,9 +10,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +23,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.learning.CrudSpringBoot.entity.Employee;
 import com.learning.CrudSpringBoot.exception.EmployeeNotfoundException;
 import com.learning.CrudSpringBoot.service.EmployeeService;
@@ -53,25 +52,25 @@ public class EmployeeRestController {
 		return employeeService.findAll();
 	}
 
-	@GetMapping("/employees/{employeeId}")
-//	@Scheduled(fixedDelay = 1000, initialDelay = 3000)
-	public Resource<Employee> findById(@PathVariable int employeeId) {
-
-		Employee thEmployee = employeeService.findById(employeeId);
-
-		if (thEmployee == null) {
-			throw new EmployeeNotfoundException("Employee id not found");
-		}
-
-//		all users, HATEOS, Send link back to User
-		Resource<Employee> resource = new Resource<Employee>(thEmployee);
-
-		ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).findAll());
-
-		resource.add(linkTo.withRel("all-employees"));
-
-		return resource;
-	}
+//	@GetMapping("/employees/{employeeId}")
+////	@Scheduled(fixedDelay = 1000, initialDelay = 3000)
+//	public Resource<Employee> findById(@PathVariable int employeeId) {
+//
+//		Employee thEmployee = employeeService.findById(employeeId);
+//
+//		if (thEmployee == null) {
+//			throw new EmployeeNotfoundException("Employee id not found");
+//		}
+//
+////		all users, HATEOS, Send link back to User
+//		Resource<Employee> resource = new Resource<Employee>(thEmployee);
+//
+//		ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).findAll());
+//
+//		resource.add(linkTo.withRel("all-employees"));
+//
+//		return resource;
+//	}
 
 	@PostMapping("/employees")
 	public ResponseEntity<Employee> addEmployee(@Valid @RequestBody Employee thEmployee) {
@@ -123,5 +122,27 @@ public class EmployeeRestController {
 	@GetMapping("/hello-I18N")
 	public String helloI18N() {
 		return messageSource.getMessage("good.morning.message", null, LocaleContextHolder.getLocale());
+	}
+
+	// Dynamic filtering of object fields
+
+	@GetMapping("/employees/{employeeId}")
+	public MappingJacksonValue findById(@PathVariable int employeeId) {
+
+		Employee thEmployee = employeeService.findById(employeeId);
+
+		if (thEmployee == null) {
+			throw new EmployeeNotfoundException("Employee id not found");
+		}
+
+		SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("id", "firstName");
+
+		FilterProvider filterProvider = new SimpleFilterProvider().addFilter("FilteredEmployee", filter);
+
+		MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(thEmployee);
+
+		mappingJacksonValue.setFilters(filterProvider);
+
+		return mappingJacksonValue;
 	}
 }

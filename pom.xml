@@ -42,10 +42,12 @@
 			<scope>runtime</scope>
 		</dependency>
 		
-		<dependency>
+		
+		<!-- Just Uncomment this dependency to enable XML format -->
+		<!-- <dependency>
 		    <groupId>com.fasterxml.jackson.dataformat</groupId>
 		    <artifactId>jackson-dataformat-xml</artifactId>
-		</dependency>
+		</dependency> -->
 		
 		<dependency>
 			<groupId>mysql</groupId>

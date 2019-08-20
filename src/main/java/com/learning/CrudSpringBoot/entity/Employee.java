@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -18,6 +20,7 @@ import io.swagger.annotations.ApiModelProperty;
 @Entity
 @Table(name = "customer")
 //@JsonIgnoreProperties(value = { "email" }) -------To ignore properties in response----------
+@JsonFilter("FilteredEmployee") // --------------To ignore properties uiong dynamic filtering--------
 public class Employee {
 
 	@Id
